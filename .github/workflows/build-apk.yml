@@ -1,4 +1,4 @@
-name: Build PANCLUB Share Probe
+name: Build PANCLUB Resolver Probe v0.2
 
 on: [push, workflow_dispatch]
 
@@ -22,153 +22,16 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Generate probe app
+      - name: Generate PANCLUB v0.2 project
         shell: bash
         run: |
-          mkdir -p app/src/main/java/com/panclub/shareprobe
-
-          cat > settings.gradle <<'EOF'
-          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-              repositories { google(); mavenCentral() }
-          }
-          rootProject.name = 'PANCLUBShareProbe'
-          include ':app'
-          EOF
-
-          cat > build.gradle <<'EOF'
-          plugins {
-              id 'com.android.application' version '8.7.3' apply false
-          }
-          EOF
-
-          cat > app/build.gradle <<'EOF'
-          plugins { id 'com.android.application' }
-          android {
-              namespace 'com.panclub.shareprobe'
-              compileSdk 35
-              defaultConfig {
-                  applicationId 'com.panclub.shareprobe'
-                  minSdk 26
-                  targetSdk 35
-                  versionCode 1
-                  versionName '0.1'
-              }
-              compileOptions {
-                  sourceCompatibility JavaVersion.VERSION_17
-                  targetCompatibility JavaVersion.VERSION_17
-              }
-          }
-          EOF
-
-          cat > app/src/main/AndroidManifest.xml <<'EOF'
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application
-                  android:label="PANCLUB"
-                  android:theme="@android:style/Theme.Material.Light.NoActionBar">
-                  <activity android:name=".MainActivity" android:exported="true">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-
-                      <intent-filter>
-                          <action android:name="android.intent.action.SEND" />
-                          <category android:name="android.intent.category.DEFAULT" />
-                          <data android:mimeType="text/plain" />
-                      </intent-filter>
-                  </activity>
-              </application>
-          </manifest>
-          EOF
-
-          cat > app/src/main/java/com/panclub/shareprobe/MainActivity.java <<'EOF'
-          package com.panclub.shareprobe;
-
-          import android.app.Activity;
-          import android.content.ClipData;
-          import android.content.Intent;
-          import android.os.Bundle;
-          import android.widget.TextView;
-
-          public class MainActivity extends Activity {
-              private TextView out;
-
-              @Override
-              protected void onCreate(Bundle state) {
-                  super.onCreate(state);
-                  out = new TextView(this);
-                  out.setPadding(48, 72, 48, 48);
-                  out.setTextSize(17);
-                  out.setTextIsSelectable(true);
-                  setContentView(out);
-                  inspect(getIntent());
-              }
-
-              @Override
-              protected void onNewIntent(Intent intent) {
-                  super.onNewIntent(intent);
-                  setIntent(intent);
-                  inspect(intent);
-              }
-
-              private void inspect(Intent intent) {
-                  if (intent == null) return;
-
-                  StringBuilder s = new StringBuilder();
-                  s.append("PANCLUB Share Probe\n\n");
-                  s.append("Pinterest → 공유 → PANCLUB\n\n");
-                  s.append("ACTION\n").append(intent.getAction()).append("\n\n");
-                  s.append("MIME\n").append(intent.getType()).append("\n\n");
-
-                  Bundle extras = intent.getExtras();
-                  s.append("EXTRAS\n");
-
-                  if (extras == null || extras.isEmpty()) {
-                      s.append("(없음)\n");
-                  } else {
-                      for (String key : extras.keySet()) {
-                          try {
-                              s.append(key).append("\n")
-                               .append(String.valueOf(extras.get(key)))
-                               .append("\n\n");
-                          } catch (Exception e) {
-                              s.append(key).append("\n<읽기 실패>\n\n");
-                          }
-                      }
-                  }
-
-                  ClipData clip = intent.getClipData();
-
-                  s.append("\nCLIP DATA\n");
-
-                  if (clip == null) {
-                      s.append("(없음)\n");
-                  } else {
-                      for (int i = 0; i < clip.getItemCount(); i++) {
-                          ClipData.Item item = clip.getItemAt(i);
-
-                          s.append("item ").append(i).append("\n")
-                           .append("text: ")
-                           .append(String.valueOf(item.getText()))
-                           .append("\n")
-                           .append("uri: ")
-                           .append(String.valueOf(item.getUri()))
-                           .append("\n\n");
-                      }
-                  }
-
-                  out.setText(s.toString());
-              }
-          }
-          EOF
+          echo 'H4sIAMZxsmoC/+07a28bV3b+rF9xPQWsoUUNST0sryTKoSnaZqIXSMrZwvIaw+ElNdFwZjIPPXZjYNG6CzcO2kWx2WRbu3WLBRoULhBsdossdtEf048R/R96zr13hnceouQ0cVus5oM4cx/nnHvued8rnwaBaQ98beDpPYte+T6eMjw3FhbYLzzp3/LC/GL8ztor5aUbS1dI+cpbeEI/0D1Af+VP83GtcGDam7qtD+iQ2gH5CfGo6/hm4Hgm9eFz4DgDi6qFFTLUD6ldh0GebuE3F5kdBmHH8QJsJY/J46kedando7Zx0qK+Y4WB6SRQTBF4ZDSbTo9qPg3UVrrxTq258Wh769FOa/vdRr3zqNXY2W4XMgAm0An0PJ7yHCfY8ZwPqBFotj6kpEqmd2pb9Y3d2+193aPQ16XTU6ZtWGGPkull3XWnp/4E9r8bmlbv+1T+C+h/pVJJ6/9cZfFS/9+e/vtCJ80emTacoabbPc8xexpogWUaOurvNDmkng8vZPqmtqTNTxPsPCF93fIpaNiVy+f/4wObWPq+bcB5+n+jspTS/wqYgEv9f6v6P1n3H0+JZmEo0If6rm5QPsfV0XF2NR99qct9KQ6DPte0aLt3QOYXWUuP9vXQCuqO3TcHAhg+ErZmbzJQfIamjUDnbsQtsIsDGkiY8BEmqw6RBJlLt25hHDBd1uY42McyxdsuUuJLBPpO6Bm0Dt1AZNe0zOCEvKsf6vc5MO1+o9VuQqBSWUqRdOEpj/83rCjqv+8ZpaFu2qUa32MI1cw+9QPteGi9Bf2vLN64kdL/hfJC5VL/38azOhSbTWCzbX9ZqHlV2Q8Cd7lU8o19OtT92CqAfpR096DkUb8k2pQ1Jr6roU/9WZd6Q9NncYLoXkZbUVUiAOMBWnOr02htNToKKQkQkhUYWwYBxtK71KoqImpXMv2Ivm5R3QvocdDx9H7fNKpK4IU0OzaARQFN70TffnBi0VIHW7VNPaCeqVvahjnYD7Qtp2YgPbd1TyyUUwqNh6jQyVXCbNOuiT4l7qTHLuRHtCfoGcNhsEw7gGRltm9agDnZF+M6k598ssbHaJu15lbMzgQQ4CodON7JZDDRKG2jtrtVv9doZYCtliaQ+10upd3YWv9OlrLeuFPb3ejkw+rpgR7DGZpD2jlxARbKUMm1YDMvzoDVUiQUQppLkjivTa2WIlVb+z8ULCfs/wfgnEqo4cL1lsautyQLtoYDvyv7P19eKqfiv7ny0tJl/Pd24j/dONAHlOQHXCtTU+YQTReRokItEoOVdKfhcNWrW6a7Dop15oAm+8l0O752O7QhC8n0HJk9CKW0tuE5lnXfpEdnjeiA4vL+aADKqmY6ALnfpx7ttajeo95Kurtpu2HQDjyqDyf15c22Ae89cJe7rQ2Ia23K7Fd2CHSnGgG0Abz2cWUBLET3enX+7SdHhoFpaTXP0082TD/I6asDWzjevJkbpn1Ae/d0f39Td3P7c4FuOIYu7cW4Ix8KbK4Reh7ub+OYGmHgeG3qHZoGvdjgPMo9OqDH6JIhDPHO7N/RA7DEwPIpN+yCxSWGpfs+kU0WAbmgds8ncQMP7V3PPARHQcAKBDCxb9q6RcDAk83aDx+1GuvNVqPeaZMqqcytnD/h9vb6n8PYuUVmyCZMEBQTkAnAQqoJDyM6NZGLqCwW829BNPbgR3t7/t7enjK9uvZwRinGQ+u1duNRcwt8ZrvZad5vFC6A+9329tbG+gXQq7dMv7DqG57pBg9+tPbwegA+Egi5XsU/Dxg9DyVfV7J6e3szH/iOLfrYpDVVu36rsFricNYUIDFBIycuJTnkyPEOqAc8jaUEdOmobdoDi3b2QSN7UYeaWnNkCYgTBgKVYAOXjh00e+P8DtQbgJLQs4oE11ckXad3shL34xYbkEeOWxCAGk0r8gHFCE4Qv3ULkFwD2Gq4wgBUjRWGoBqsMBTV7orIPR/nUFkHs2D2cD15pCbJ8w3Hk+iLp6aI9CWC2JSqn6LgnW1IkT0TkmahT4eY+UMeDfwGcNxGs4WN0+MQAnstHtItjOkYG21Ah6+wm7CHUrsa7IOEjWfAjokx0SbmjMDzgh2914OVqQvlIlm8UST8NzsOwbTNH1O1spjf2fTbFA2o3gWBxxhdGsaJ1gAVowRmyZ2Y4DNvxjr52IK8L74LcFXwTdzpqQXRm+W15wQwlPYidm/RIzGH/xAzj+PjUWaSrpzWiBrzwjSsQ7zqOSeqjJnrJIQJYdBzjuwt50iVMQu64pkJVJF2MvAROXnLEzLrh108tAFxMEkVZCIE8bnFf5aJqWHJhw1sHAeeLgBpjR92WrVH7d3beGQkS6LQTdjwbwOwAz9ZaAYEO4QDkhjdJ6pJrvJmeVlMMUV4RIwekoE4oyaZkREcGCUAkWvXYA6ObwZ0WHdCFCeyRsrJjlqglgv4gZINAyIyMtmPIP3MmVrg8EXKZD1OM8DTjwAIY+rVmKHsc5lhyHCMxZe49L7p+cGuZ6kAInIH0rh9FmvBuCjpJ+w4EWSVsPM6cljW5vbsPcjRZjJrU1q190n7Xq3V2LOFEC0TGBhL1AxR9mwkkzczglkb0szbGH9yQCNOJhL1TmMdfTgjgajRwmIuKOros5+NXnxSUIAXvLfAkcAMacG4zcnJaZmRbJUq+AJw2p3tnT37m69+N3r+krj6ieXovdFnPx89eY5UjV48IaMv/3P0rz8lp//2h9e/fDr6+Henz56ePvu1pqTkzKNBiAFUdpPzEbca7e2N+82tu5qWgMWdeLR/sHX7Il5O2Q7KnDZVQTpn11JLjcSK+qGFeuqaLrVMmwoOpSkP7W171+SxgICXoBnI5aAKshDnWyWBOsYYCSykiEHWON3GcxPgh+UMIpcmt8tKE3gnqVXCJEymICZVlUqBRKEmqd+rNbdAOlLLZNGKa9qoNRSiYZXRVEQwqZEy4D37TnOrtkF2mltCTAtRH8DSIAjIGgV8JAD3Op0dkpyGUUxBGqLkGK1oHFmrglcuZ9FwiUtRy+V5B5b5+m8+H734LYouI2D07NevP/lCSVqkPKnpgdcBGWRVJhQdtsgseaa/g1UcEAyQEAf+ROwopBUvy9K5AvKz0wAd6AB1mxukXa/lbBk/7pDJkb4YQgz/8rYwojIx+ywjfg4zR7/6+vQ/fkpG//Dz06++jqzCN1+9HD17efovX57+7ZPTf35OXv/q09HLT19/+nm+rcj1A5L65PNpHfgD0tdpbm/JgictapIQJWHNF8h2q3mXC3PtbuMMBXE8c8AsUKQlErLzdSXGwJUmpTAR7G+jNfFcpjrnTRYB5SyWIpfzoGD6cJ4CJlB+Gy0UEjP6i1egiK8//vqbLyNd/PtfjH7z79y5fHH67ItJwjKB2wto9OrNnQb81NbJ3VonZ1cxX/GoAfb4tuUYBz5GKxj2tFjbu5Bibkh8QX2asMN8Est7ZzfWSZdBlBksYzqPv0mqquTNmJsihUcJGhn94dXpy78e/dXnpdPfPzl9+XT07PnrX/xx9OKPZPT0czL6x6ejX/4Wfp6MXsDXk5ev//KF0NnRpx9fSGEzlK+Ryv+AcJSJ0WevTv/pFfnmy+enSOcbEjd1Ll4hJO3t3VadyUr9XmMd92SyGgnxjf0IUgXCirxMreH3nzCrB5bw2auELJ+PBHxVa/t+YwvCUxBeDIRZjEL+62d/x3yPGbBXiFpM4Hrgsy9RhQEnh1+yjcfv2IThR5LSs6jJjdKJgUUzojaODcoOswlNu7YJ2zzWCcrTE933VZYZtM2ha1E8O4dMdjJ3ZNViYDap72PRpDAps0iFZMyuc2MuR2PFbAxWIMG+5xz5ZLzkTDopao5gRhgUKXB1PIgKoMeulleIvVpN1P+gZWYmzT7wDyQUgR+8qwJ2SuMiovEcFa8dhsgISF8Cx3AslmJtOEfUq+s+VXnBVWttb3dy9PYqh6HRD0Pd8nlVUClg6pfX4ys528MYxAhuWhYd6FbNG4R4JzNmmarsQrrk8uNKQbXIm9h7WmUzdW9iwCLVTHMBFu6AJIxb0qbJ0FjNAvbFNugdx7Kco1akNyq7ZZY3oQVrBg3apMG+AyJ3t9FR8oYJtB1zSCE5UCtYns0Hp/fiQYtnDmI4YRNd6gUnwDKferO1AfBRKeaqhLLp/Ni0LL20qJWJumHa4fEKEbctCqTmgka9T7vvmUFpcX5Jm79B6rBRQ1qqzJXJptM1LUhN9L7umaJfuRBZNQM3dXZDtwchaJFSJMqBM/teq3jgrHxYLWs/KFKbvdx8E3gIhh2P7gdDqyiXfY+xZeY41Yp1YIHueun6GF/Gz7NABfw7Kggk+q5j+xRv7qgTXPqDsYWRosmHkuFJJityh1DXc/w8K9lW58sV8tFHJPqYkz/m5Y8l+eNmXjIhDILNi1BstfdYknzHpBaQgUYAGZeXThhaz/QNLsvqGUkDByxKEEAMfmuAcwjGxvQbQxe28gzLnTEP7QBMsGQbIoUkRyboWxiQicTGtjaykGGRUXN2eMJvYNngEEM6MdOQTuTAkrOfKpEiXXKLc7bheY7Hx6kFrEexStd4sppvrTGQBICspMDB54/DQDzaRBG1Y9CeNW1nb5twwsgidqAguFZkq5GPInJLcOfuWMdxyFC3T8YxiDKx9CGnqFEZB/U8z93+JFG/wmGy3OG3JHATyh9xKs75TnFGVhkjRiXqrJliJGYIDLNHXUs3KKj1XkkpKqWc4EkeE5bLc3f4uHRz/2LT52swbjkzfV7nzedivwHjrsnTr+lDd4U3Tph87cPQCXDYnpKY/GfzC1GrZGvFSSpBdeFnj9qQN6ny8cqm7q5yhhaxAj6g3ho/KvKFNidOlFfXZKE+2kd3pQ41iHN72Y0fH16h4lhUt2HowHNCVy3kBT14butBPKyy6swZ1iGK7oJjjOw0P+z63L7AevdhhcdquUiGGov51MJsZaFckL4vHIRFZ2x4HFzOcRXBMbvhoJs2BGGSJkGUhl4h0Q3WswuZbA/CNAF0Bg+ZzwXL76E+Am7kQeW9rFMGez61e4oFW4rSkgU6jV3TSYjlcyHue7RfTUxaWFxJGXEmWsSx8DCAyxdaUrbVORUNqyfbFw52DWcXoslg11V2gsu+ExYzfsXLDqvx2egaseBbSHV8wyIp0Sw3ADnXGnbgnWQUg2Jtn+PH/zk6adMg7WARBx4gqohlfC7LkqL3KJjHImHv93UrxPRIQi7d7NB8iMpVhFUkql7sslq3IIOd1kPqqXY1RkuR6PylIKu/bHUjxYJEUdCTqIUwkn08My2cFSLFOZOJOZO5ypXNtNXFojwbuiB5OtP68yPoFGKUArMgVpAXvcmjUFxSJCY8ExsbeyKUnXh2WeAgq+RmuZDvY8ZH8IGDx2XS5MzR1gHFuMEFRuC2wngtKcsSyyrIMolPOWyKiZfZgREOAmYfsxV29nc1wphhi0gJga5zK9u1zdvNu7vbu222zrFU5Fe2c1mVdMliiOBCbtTB4/50QU8KPCZFGfF+ldPXNEIWdpZXcv1efO8ldn0MkXyxg1+Q4YUymJF/IwbvtrzDr8LsKXgTZhn/qLeW8ZuvB98+2tt7gPd2Hj68nuwoKJO85rhSF5MZ+ckKaGQ0jK11ZmYlzXTWnsvyruOg1yWxYxXcPkTbI7M7e2aVrnjwKbmueD8qddzD05WLetjo/C2uk4BYv1GNZD+p5/txSYRX45So1e7570MKoyqa3JE4FSrE4sWKD3m4xs4OoJjDgRbBlzr4bZ6cHn6zXnO8QbbvaJ63vwkJ/P9fcxANziSh54RdcC6Qqh/w3tysUJ7Rh+ASBOggB1gAOSHwLqen6+m2ATvjTF6Q6LmquvL+fOAK/qRaaV6za+e1HtGue/byEkMHZj8HgH+YB9bw/TzK/AuiMg0nj1an3z+jeU4pnF/gTfI3v6QaH7BDdisn0qY9sYTKzk3tjPFVlDFRyTu2pOsJY5FsZ1FQ5k4twMYsM3kNVtvt3Hl0s5BxtFEe6nfPO3nHC7YPHpJu2BcjWcPNyg/mHia9hp0xxqpd7XoaYxNML7CLNLMV9Ld+V7OoPUDjBJFDdPMz6bxhjPCsMLlYLsbRkV2MJsxKcOQ1AlbDcvxEHUFwG2akiyf5uxvfrRnf0kn7UnZxJ7WbSX8+IV3kV3ZS1EXuC8svqdQOguQx7HyS+ZSz3JGU4LM++ZoNXq9hjaLQldnKq77kGGADFa24cvUWuPCHj6fRF4M62j16vN1XfXYluxbAS7Q1s+BwMepKHfH5qVyzXExMyW7dpLWzSwgTPbFcKRo734u4WCkkm2gzQJPzDUYUMsj+MaJbppNd+Envy/4F3LcgIOGuOR6MufK9drY/4Y5F9+RqVxQ2f7chkFjNRcIfMiMHOhe27gzreLMu//v+8rl8Lp/L5/K5fC6fy+fyueDz35cKD04AUAAA' | base64 -d | tar -xz
 
       - name: Build APK
         run: gradle :app:assembleDebug --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
-          name: PANCLUB-Share-Probe-APK
+          name: PANCLUB-Resolver-Probe-v0.2
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
