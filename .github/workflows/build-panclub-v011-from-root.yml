@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/build-panclub-v011-from-root.yml'
+      - 'android-overlay/**'
   workflow_dispatch:
 
 permissions:
@@ -692,6 +693,15 @@ jobs:
           echo "ea0d38a2838f8d9fe17e97471d570ea548345cac2dd7fac9bcd815cb1ff6b113  $GITHUB_WORKSPACE/panclub-src/app/src/main/java/com/panclub/shareprobe/TargetPanContract.java" | sha256sum -c -
           echo "8d02adf57a6a920a86516dcb28db94afccbf446c48c6083dbf1cef5400a9539b  $GITHUB_WORKSPACE/panclub-src/app/src/main/java/com/panclub/shareprobe/BatterMassSimulator.java" | sha256sum -c -
           ! grep -R '\.similar(' "$GITHUB_WORKSPACE/panclub-src/app/src/main/java/com/panclub/shareprobe/FitEligibilityGate.java"
+
+      - name: Apply checked pre-bake software overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          sha256sum -c android-overlay/SHA256SUMS
+          cp -R android-overlay/app/. panclub-src/app/
+          cp -R android-overlay/tests/. panclub-src/tests/
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
