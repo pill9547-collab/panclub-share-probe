@@ -1,0 +1,85 @@
+name: Build PANCLUB v0.11 From Root Carrier
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-panclub-v011-from-root.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Restore exact source package from uploaded carrier
+        shell: bash
+        run: |
+          set -euo pipefail
+          CARRIER="$GITHUB_WORKSPACE/build-panclub-v011-latest-fixed.yml"
+          test -f "$CARRIER"
+          mkdir -p "$GITHUB_WORKSPACE/panclub-src"
+
+          awk '
+            /<<.PANCLUB_SOURCE_B64./ {capture=1; next}
+            capture && /^[[:space:]]*PANCLUB_SOURCE_B64[[:space:]]*$/ {capture=0; exit}
+            capture {gsub(/^[[:space:]]+/, ""); print}
+          ' "$CARRIER" > "$RUNNER_TEMP/panclub-v011-source.tar.xz.b64"
+
+          test -s "$RUNNER_TEMP/panclub-v011-source.tar.xz.b64"
+          base64 -d "$RUNNER_TEMP/panclub-v011-source.tar.xz.b64" > "$RUNNER_TEMP/panclub-v011-source.tar.xz"
+
+          echo "b0f13520a5d22a8f8acade8a415642014a3e09570ae1d05624b0c39bf1eb8168  $RUNNER_TEMP/panclub-v011-source.tar.xz" | sha256sum -c -
+
+          tar -xJf "$RUNNER_TEMP/panclub-v011-source.tar.xz" -C "$GITHUB_WORKSPACE/panclub-src"
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run source regressions
+        working-directory: panclub-src
+        run: bash tests/run.sh
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android 35 build tools
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build APK
+        working-directory: panclub-src
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Package verified APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="$GITHUB_WORKSPACE/panclub-src/app/build/outputs/apk/debug/app-debug.apk"
+          test -f "$APK"
+          cp "$APK" "$GITHUB_WORKSPACE/PANCLUB-public-share-probe-v0.11-integration.apk"
+          sha256sum "$GITHUB_WORKSPACE/PANCLUB-public-share-probe-v0.11-integration.apk" | tee "$GITHUB_WORKSPACE/PANCLUB-public-share-probe-v0.11-integration.sha256"
+          ls -l "$GITHUB_WORKSPACE/PANCLUB-public-share-probe-v0.11-integration.apk"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PANCLUB-public-share-probe-v0.11-integration
+          path: |
+            PANCLUB-public-share-probe-v0.11-integration.apk
+            PANCLUB-public-share-probe-v0.11-integration.sha256
+          retention-days: 7
+          if-no-files-found: error
