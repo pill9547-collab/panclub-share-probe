@@ -1,0 +1,347 @@
+{
+  "status": "TEST_WAIT_SOURCE_VERIFIED",
+  "ruleStatus": "TEST_WAIT",
+  "sourceFixtureStatus": "SOURCE_FIXTURE_INTEGRATION_PASS",
+  "sourceBodySha256Expected": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+  "sourceBatterRowCount": 9,
+  "experimentalTransformCount": 9,
+  "ingredientResults": [
+    {
+      "index": 0,
+      "ingredientIdentity": "apple cider vinegar",
+      "component": "BATTER",
+      "sourceGrams": "10",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "apple cider vinegar (10g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[0]",
+        "rawSourceRow": "2 tsp (10g) apple cider vinegar"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "100000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "6.200012400024800049600099200198400",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 1,
+      "ingredientIdentity": "plant milk",
+      "component": "BATTER",
+      "sourceGrams": "270",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "plant milk (270g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[1]",
+        "rawSourceRow": "1 cup + 2 tbsp (270g) plant milk"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "2700000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "167.4003348006696013392026784053568",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 2,
+      "ingredientIdentity": "all purpose flour",
+      "component": "BATTER",
+      "sourceGrams": "210",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "all purpose flour (210g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[2]",
+        "rawSourceRow": "1 1/2 cups + 1 tbsp (210g) all purpose flour*"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "2100000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "130.2002604005208010416020832041664",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 3,
+      "ingredientIdentity": "granulated sugar",
+      "component": "BATTER",
+      "sourceGrams": "170",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "granulated sugar (170g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[3]",
+        "rawSourceRow": "3/4 cups + 1 tbsp (170g) granulated sugar"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "1700000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "105.4002108004216008432016864033728",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 4,
+      "ingredientIdentity": "baking powder",
+      "component": "BATTER",
+      "sourceGrams": "6",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "baking powder (6g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[4]",
+        "rawSourceRow": "1 1/2 tsp (6g) baking powder"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "60000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "3.720007440014880029760059520119040",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 5,
+      "ingredientIdentity": "baking soda",
+      "component": "BATTER",
+      "sourceGrams": "2",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "baking soda (2g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[5]",
+        "rawSourceRow": "1/2 tsp (2g) baking soda"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "20000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "1.240002480004960009920019840039680",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 6,
+      "ingredientIdentity": "salt",
+      "component": "BATTER",
+      "sourceGrams": "5",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "salt (5g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[6]",
+        "rawSourceRow": "3/4 tsp (5g) salt"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "50000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "3.100006200012400024800049600099200",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 7,
+      "ingredientIdentity": "oil",
+      "component": "BATTER",
+      "sourceGrams": "82",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "oil (82g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[7]",
+        "rawSourceRow": "1/4 cup + 2 tbsp (82g) oil"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "820000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "50.84010168020336040672081344162688",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    },
+    {
+      "index": 8,
+      "ingredientIdentity": "vanilla extract",
+      "component": "BATTER",
+      "sourceGrams": "16",
+      "sourceEvidence": {
+        "origin": "VERIFIED_IMMUTABLE_SOURCE",
+        "sourceUrl": "https://www.thecuriouschickpea.com/easy-vegan-vanilla-cake/",
+        "expectedBodySha256": "b6c50e9f5c3b82cbde644049b2967b4b06471d59090d1fb80b8bdaed861e39d7",
+        "selectionRecord": "evidence/first_bake/BakeFit_Rev1_FirstBakeReplacement_Selection_v1.json",
+        "selectionObservation": "vanilla extract (16g)",
+        "verifiedSourceLocator": "section#mv-creation-7 > One 8-inch cake or Two 6-inch cakes > li[8]",
+        "rawSourceRow": "1 1/2 tbsp (16g) vanilla extract"
+      },
+      "exactExperimentalTarget_g": {
+        "numerator": "160000",
+        "denominator": "16129"
+      },
+      "decimalPreviewNonAuthoritative_g": "9.920019840039680079360158720317441",
+      "executionTarget_g": null,
+      "scaleResolution_g": null,
+      "executionRoundingRule": "UNRESOLVED_PENDING_SCALE",
+      "derivation": {
+        "ruleId": "BF-F02",
+        "ruleStatus": "TEST_WAIT",
+        "geometryFactorExact": {
+          "numerator": "10000",
+          "denominator": "16129"
+        }
+      }
+    }
+  ],
+  "geometry": {
+    "decision": "GEOMETRY_PASS_SOURCE_INGESTED_OWNER_ROUND_CLASSIFICATION",
+    "ruleChain": [
+      "BF-P04",
+      "BF-U01",
+      "BF-F01"
+    ],
+    "sourceDiameter": {
+      "raw": "6 inch",
+      "source": "fixtures/source_snapshots/easy-vegan-vanilla-cake/b6c50e9f5c3b82cb/bakefit-source-fixture.regenerated.json",
+      "origin": "VERIFIED_IMMUTABLE_SOURCE",
+      "measurementClass": "NOMINAL_DIAMETER"
+    },
+    "targetDiameter": {
+      "raw": "12 cm",
+      "origin": "MARKET_PRODUCT_SPEC_REFERENCE",
+      "fixtureId": "KR_MARKET_REFERENCE_ROUND_12CM_NORMAL_2PAN_V1",
+      "measurementClass": "NOMINAL_DIAMETER"
+    },
+    "lengthNormalization": {
+      "ruleId": "BF-U01",
+      "definition": "1 inch = 2.54 cm",
+      "sourceNormalizedCm": "15.24"
+    },
+    "factorExact": {
+      "numerator": "10000",
+      "denominator": "16129"
+    },
+    "factorDecimalInternal": "0.6200012400024800049600099200198400",
+    "formula": "(targetDiameterCm/sourceDiameterCm)^2",
+    "sourcePanCount": 2,
+    "targetPanCount": 2,
+    "processPreserved": true,
+    "referenceHeightUsed": false,
+    "ingredientScalingAuthorized": false,
+    "sourceSnapshotGate": "SOURCE_FIXTURE_INTEGRATION_PASS"
+  },
+  "process": {
+    "sourcePanCount": 2,
+    "targetPanCount": 2,
+    "division": "DIVIDE_BATTER_BETWEEN_TWO_PANS_PRESERVED",
+    "sourceTemperatureGuidance": "350 degrees F (source instruction only)",
+    "sourceTimeGuidanceFor6In": "6-inch source mode: 31-33 minutes (source instruction only; NOT target bake-time guidance)",
+    "targetBakeTime": null
+  },
+  "frostingScalingApplied": false,
+  "volumeToMassConversions": 0,
+  "numericConversionsApplied": [
+    {
+      "ruleId": "BF-U01",
+      "definition": "1 inch = 2.54 cm",
+      "sourceNormalizedCm": "15.24"
+    }
+  ],
+  "orphanNumbers": [],
+  "productionReady": false,
+  "fitApplied": false,
+  "userVisible": false
+}

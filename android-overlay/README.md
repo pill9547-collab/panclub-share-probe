@@ -5,3 +5,8 @@ The repository's v0.11 carrier restores the historical source package. The activ
 This overlay removes the 12 cm market fixture from the production user flow, adds structured user target-pan state and source-pan recovery quarantine, presents Korean consumer results, and adds the dynamic BF-F01 regression matrix. The market fixture and BF-F02 evidence remain available only to their existing regression and future physical-validation lanes.
 
 `SHA256SUMS` is checked before the overlay is applied.
+
+The product-owner-approved `BF-F02 TEST_WAIT Consumer Preview Exception v0.1`
+adds a separate, fixture-only Korean preview for the verified Easy Vegan
+Vanilla Cake 12 cm × 2 validation target. It does not change BF-F02 data,
+production readiness, FIT state, or the fail-closed Pinterest path.

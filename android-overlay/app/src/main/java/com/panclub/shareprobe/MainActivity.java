@@ -16,6 +16,8 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.CookieHandler;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,9 +30,11 @@ public final class MainActivity extends Activity {
     private Future<?> task;
     private long generation;
     private PreBakeSession session;
+    private EasyVeganPreviewSession previewSession;
     private boolean diagnosticsVisible;
     private String targetDiameter = "", targetCount = "", targetHeight = "";
     private String sourceDiameter = "", sourceCount = "", sourceHeight = "";
+    private String previewDiameter = "12", previewCount = "2", previewHeight = "";
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -61,6 +65,7 @@ public final class MainActivity extends Activity {
         final long run = ++generation;
         if (task != null) task.cancel(true);
         session = null;
+        previewSession = null;
         diagnosticsVisible = false;
         targetDiameter = targetCount = targetHeight = "";
         showLoading();
@@ -141,6 +146,9 @@ public final class MainActivity extends Activity {
         if (working != null && source == null) sourceRecoveryForm();
         else if (source != null) targetForm();
 
+        Button preview = button("Easy Vegan 검증 전 예시 보기");
+        preview.setOnClickListener(v -> openCoreValuePreview());
+
         Button diagnostics = button(diagnosticsVisible ? "진단 정보 닫기" : "진단 정보 보기");
         diagnostics.setOnClickListener(v -> {
             diagnosticsVisible = !diagnosticsVisible;
@@ -150,6 +158,75 @@ public final class MainActivity extends Activity {
             TextView raw = label("", 12, Color.DKGRAY);
             raw.setTextIsSelectable(true);
             raw.setText(session.diagnostics().toString());
+        }
+    }
+
+    private void openCoreValuePreview() {
+        try {
+            previewSession = EasyVeganPreviewSession.fromAsset(readAsset("easy_vegan_bf_f02_test_wait.json"));
+            diagnosticsVisible = false;
+            renderCorePreview(previewSession.evaluateTarget(previewDiameter, previewCount, previewHeight));
+        } catch (Exception e) {
+            showMessage("검증 전 예시를 열지 못했어요.", "내장된 검증 fixture를 확인해 주세요.");
+        }
+    }
+
+    private void renderCorePreview(JSONObject view) {
+        content.removeAllViews();
+        title(view.optString("screenTitle", "내 팬에 맞춘 레시피"));
+        label(view.optString("recipeTitle", "Easy Vegan Vanilla Cake"), 22, Color.rgb(35, 35, 35));
+        label(view.optString("publisher", "The Curious Chickpea"), 14, Color.DKGRAY);
+
+        section("원본 팬");
+        label(view.optString("sourcePan"), 18, Color.rgb(30, 30, 30));
+        section("내 팬");
+        label(view.optString("targetPan"), 18, Color.rgb(30, 30, 30));
+
+        String state = view.optString("state", "BLOCKED");
+        label(stateLabel(state), 16, stateColor(state));
+        label(view.optString("validationStatus"), 19, Color.rgb(170, 95, 0));
+
+        JSONArray ingredients = view.optJSONArray("ingredients");
+        if (ingredients != null && ingredients.length() > 0) {
+            section("재료");
+            for (int i = 0; i < ingredients.length(); i++) {
+                JSONObject row = ingredients.optJSONObject(i);
+                if (row == null) continue;
+                label(row.optString("name"), 17, Color.BLACK);
+                label(row.optString("source") + " → " + row.optString("preview"), 16, Color.DKGRAY);
+            }
+            section(view.optString("bakeHeading", "굽기"));
+            JSONArray guidance = view.optJSONArray("bakeGuidance");
+            if (guidance != null) for (int i = 0; i < guidance.length(); i++)
+                label("• " + guidance.optString(i), 15, Color.DKGRAY);
+        }
+
+        section("내 팬 바꾸기");
+        label("검증 전 재료 미리보기는 현재 원형 12 cm × 2개만 제공해요.", 14, Color.DKGRAY);
+        EditText diameter = numberInput("지름 (cm)", previewDiameter, true);
+        EditText count = numberInput("팬 개수", previewCount, false);
+        EditText height = numberInput("높이 (cm, 선택)", previewHeight, true);
+        Button evaluate = button("이 팬으로 미리보기");
+        evaluate.setOnClickListener(v -> {
+            previewDiameter = diameter.getText().toString();
+            previewCount = count.getText().toString();
+            previewHeight = height.getText().toString();
+            renderCorePreview(previewSession.evaluateTarget(previewDiameter, previewCount, previewHeight));
+        });
+        Button back = button("읽은 레시피 결과로 돌아가기");
+        back.setOnClickListener(v -> {
+            diagnosticsVisible = false;
+            render(session.view());
+        });
+        Button diagnostics = button(diagnosticsVisible ? "진단 정보 닫기" : "진단 정보 보기");
+        diagnostics.setOnClickListener(v -> {
+            diagnosticsVisible = !diagnosticsVisible;
+            renderCorePreview(previewSession.view());
+        });
+        if (diagnosticsVisible) {
+            TextView raw = label("", 12, Color.DKGRAY);
+            raw.setTextIsSelectable(true);
+            raw.setText(previewSession.diagnostics().toString());
         }
     }
 
@@ -234,6 +311,16 @@ public final class MainActivity extends Activity {
         label(detail, 16, Color.DKGRAY);
     }
 
+    private byte[] readAsset(String name) throws Exception {
+        try (InputStream input = getAssets().open(name);
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+            return output.toByteArray();
+        }
+    }
+
     private LinearLayout.LayoutParams spacedParams() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -242,12 +329,14 @@ public final class MainActivity extends Activity {
     }
 
     private String stateLabel(String state) {
+        if ("PREVIEW".equals(state)) return "검증 전 미리보기";
         if ("READY".equals(state)) return "평가 가능";
         if ("NEED_INFO".equals(state)) return "정보 필요";
         return "변환 불가";
     }
 
     private int stateColor(String state) {
+        if ("PREVIEW".equals(state)) return Color.rgb(180, 105, 0);
         if ("READY".equals(state)) return Color.rgb(20, 115, 60);
         if ("NEED_INFO".equals(state)) return Color.rgb(180, 105, 0);
         return Color.rgb(160, 35, 35);
