@@ -18,12 +18,18 @@ public final class ConsumerResultPresenter {
             JSONObject normalized = result == null ? null : result.optJSONObject("normalizedInput");
             JSONObject source = working == null ? null : working.optJSONObject("sourcePan");
             JSONObject target = working == null ? null : working.optJSONObject("targetPan");
+            JSONObject recovery = result == null ? null : result.optJSONObject("sourcePanRecovery");
+            JSONObject recoveredCandidate = recovery == null ? null : recovery.optJSONObject("candidate");
             String title = working != null ? working.optString("recipeTitle") :
                     normalized == null ? "레시피" : normalized.optString("recipeTitle", "레시피");
             JSONObject view = new JSONObject()
-                    .put("recipeTitle", title.isEmpty() ? "레시피" : title)
-                    .put("sourcePan", source == null ? JSONObject.NULL : displayPan(source))
-                    .put("targetPan", target == null ? JSONObject.NULL : displayPan(target))
+                    .put("recipeTitle", consumerText(title, "레시피"))
+                    .put("sourcePanLabel", recoveredCandidate == null ? "원본 팬" : "입력한 원본 팬")
+                    .put("sourcePan", source != null ? displayPan(source) : recoveredCandidate != null
+                            ? "직접 입력: " + displayPan(recoveredCandidate) + " (레시피 원문에서 확인되지 않음)"
+                            : "아직 확인되지 않았어요")
+                    .put("targetPan", target == null ? "아직 선택되지 않았어요" : displayPan(target))
+                    .put("actions", new JSONArray())
                     .put("fitApplied", false).put("productionReady", false);
             JSONArray reasons = new JSONArray();
             String state;
@@ -34,11 +40,17 @@ public final class ConsumerResultPresenter {
                 headline = "레시피 정보를 안전하게 읽지 못했어요.";
                 reasons.put("Pinterest 원본과 레시피 출처를 다시 확인해 주세요.");
             } else if (source == null) {
-                JSONObject recovery = result.optJSONObject("sourcePanRecovery");
                 if (recovery == null || "RECOVER".equals(recovery.optString("decision"))) {
                     state = "NEED_INFO";
-                    headline = "팬 크기를 찾지 못했어요.";
-                    reasons.put("이 레시피에 사용한 팬의 실제 지름(cm)과 개수를 알려 주세요.");
+                    boolean ambiguous = "AMBIGUOUS".equals(result.optString("sourcePanResolution"));
+                    headline = inputProblem == null
+                            ? ambiguous ? "원본 팬 정보가 여러 가지라 확인이 필요해요."
+                                        : "원본 팬 정보를 찾지 못했어요."
+                            : "원본 팬 정보를 확인해 주세요.";
+                    reasons.put(inputProblem == null
+                            ? "이 레시피에 사용한 팬 크기를 알고 있나요?"
+                            : inputProblemKorean(inputProblem));
+                    view.put("actions", new JSONArray().put("직접 입력").put("모르겠어요"));
                 } else {
                     state = "BLOCKED";
                     headline = "원본 팬 근거가 없어 안전하게 계산할 수 없어요.";
@@ -68,9 +80,11 @@ public final class ConsumerResultPresenter {
                 } else {
                     state = "BLOCKED";
                     headline = "이 레시피는 아직 안전하게 변환할 수 없어요.";
-                    if ("PAN_COUNT_MERGE_SPLIT_REQUIRED".equals(
-                            geometry == null ? "" : geometry.optString("blocker")))
+                    String geometryBlocker = geometry == null ? "" : geometry.optString("blocker");
+                    if ("PAN_COUNT_MERGE_SPLIT_REQUIRED".equals(geometryBlocker))
                         mapped.add("팬 개수 변경에 필요한 공정 보존");
+                    else if ("PAN_DIAMETER_SEMANTIC_CLASS_UNVERIFIED".equals(geometryBlocker))
+                        mapped.add("원본 팬과 목표 팬의 지름 기준(명목·내경 등) 일치 여부");
                     if (mapped.isEmpty()) mapped.add("안전한 변환에 필요한 근거");
                     for (String item : mapped) reasons.put(item);
                 }
@@ -100,7 +114,16 @@ public final class ConsumerResultPresenter {
     }
 
     private static String displayPan(JSONObject pan) {
-        return "원형 " + pan.optString("diameter", "?") + " × " + pan.optInt("count", 0) + "개";
+        String diameter = consumerText(pan.optString("diameter", ""), "");
+        int count = pan.optInt("count", 0);
+        if (diameter.isEmpty() || count < 1) return "확인이 필요해요";
+        return "원형 " + diameter + " × " + count + "개";
+    }
+
+    private static String consumerText(String value, String fallback) {
+        if (value == null) return fallback;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() || "null".equalsIgnoreCase(trimmed) ? fallback : trimmed;
     }
 
     private static Set<String> blockerReasons(JSONObject eligibility) throws JSONException {

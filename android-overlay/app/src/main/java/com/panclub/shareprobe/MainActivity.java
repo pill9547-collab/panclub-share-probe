@@ -115,7 +115,7 @@ public final class MainActivity extends Activity {
 
         String sourcePan = view.optString("sourcePan");
         if (!sourcePan.isEmpty()) {
-            section("원본 팬");
+            section(view.optString("sourcePanLabel", "원본 팬"));
             label(sourcePan, 18, Color.rgb(30, 30, 30));
         }
 
@@ -171,7 +171,7 @@ public final class MainActivity extends Activity {
 
     private void sourceRecoveryForm() {
         section("원본 팬 확인");
-        label("팬 크기를 찾지 못했어요.\n이 레시피에 사용한 팬 크기를 알고 있나요?", 17, Color.BLACK);
+        label("원본 팬 정보를 찾지 못했어요.\n이 레시피에 사용한 팬 크기를 알고 있나요?", 17, Color.BLACK);
         EditText diameter = numberInput("원본 팬 지름 (cm)", sourceDiameter, true);
         EditText count = numberInput("원본 팬 개수", sourceCount, false);
         EditText height = numberInput("원본 팬 높이 (cm, 선택)", sourceHeight, true);

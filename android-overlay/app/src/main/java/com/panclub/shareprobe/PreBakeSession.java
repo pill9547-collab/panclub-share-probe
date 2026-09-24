@@ -15,7 +15,10 @@ public final class PreBakeSession {
     public PreBakeSession(JSONObject readResult) {
         if (readResult == null) throw new IllegalArgumentException("READ_RESULT_REQUIRED");
         this.readSnapshotJson = readResult.toString();
-        this.currentResult = copy(readResult);
+        JSONObject initial = copy(readResult);
+        JSONObject working = initial.optJSONObject("workingRecipe");
+        this.currentResult = working != null && working.optJSONObject("sourcePan") == null
+                ? SourcePanRecovery.request(initial) : initial;
     }
 
     public JSONObject evaluateTarget(String diameterCm, String count, String heightCm) {
