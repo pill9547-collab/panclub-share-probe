@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,10 +76,11 @@ public final class PinIdentityResolver {
         int scriptIndex = 0;
         Matcher scripts = SCRIPT.matcher(html);
         while (scripts.find()) {
-            if (!scripts.group(1).contains("data-relay-completed-request")) { scriptIndex++; continue; }
+            String body = scripts.group(2).trim();
+            // The exact completed-request call is authoritative; the surrounding HTML
+            // marker is a delivery hint and has changed/vanished in live responses.
+            if (!body.startsWith(WRAPPER)) { scriptIndex++; continue; }
             try {
-                String body = scripts.group(2).trim();
-                if (!body.startsWith(WRAPPER)) throw new IllegalArgumentException("UNKNOWN_WRAPPER");
                 JSONTokener tokens = new JSONTokener(body.substring(WRAPPER.length()));
                 Object keyRaw = tokens.nextValue();
                 if (!(keyRaw instanceof String) || tokens.nextClean() != ',') throw new IllegalArgumentException("INVALID_ARGUMENTS");
@@ -88,7 +90,8 @@ public final class PinIdentityResolver {
                     throw new IllegalArgumentException("INVALID_TRAILING_CODE");
                 JSONObject variables = key.optJSONObject("variables");
                 if (variables == null || !expectedPinId.equals(variables.optString("pinId"))) { scriptIndex++; continue; }
-                JSONObject data = ((JSONObject) second).getJSONObject("data").getJSONObject("v3GetPinQueryv2").getJSONObject("data");
+                PrimaryRecord primary = primaryRecord((JSONObject) second, expectedPinId);
+                JSONObject data = primary.data;
                 if (!expectedPinId.equals(data.optString("entityId"))) return unproven(proof, "REQUESTED_RECORD_ENTITY_CONFLICT");
                 if (!"Pin".equals(data.optString("__typename"))) return unproven(proof, "REQUESTED_RECORD_TYPE_CONFLICT");
                 requestedRecords++;
@@ -101,15 +104,16 @@ public final class PinIdentityResolver {
                 String sourceSeoId = pinId(data.optString("seoUrl", null));
                 JSONObject row = new JSONObject()
                         .put("scriptIndex", scriptIndex)
+                        .put("responseRootKey", primary.rootKey)
                         .put("requestedEntityId", data.optString("entityId"))
                         .put("canonicalPinEntityId", canonicalId == null ? JSONObject.NULL : canonicalId)
                         .put("seoCanonicalUrl", seoCanonicalUrl == null ? JSONObject.NULL : seoCanonicalUrl)
                         .put("sourceSeoUrl", data.optString("seoUrl", null) == null ? JSONObject.NULL : data.optString("seoUrl"))
                         .put("locators", new JSONArray()
                                 .put("script[" + scriptIndex + "].literalArgument[0].variables.pinId")
-                                .put("script[" + scriptIndex + "].literalArgument[1].data.v3GetPinQueryv2.data.entityId")
-                                .put("script[" + scriptIndex + "].literalArgument[1].data.v3GetPinQueryv2.data.pinJoin.canonicalPin.entityId")
-                                .put("script[" + scriptIndex + "].literalArgument[1].data.v3GetPinQueryv2.data.pinJoin.seoCanonicalUrl"));
+                                .put("script[" + scriptIndex + "].literalArgument[1].data." + primary.rootKey + ".data.entityId")
+                                .put("script[" + scriptIndex + "].literalArgument[1].data." + primary.rootKey + ".data.pinJoin.canonicalPin.entityId")
+                                .put("script[" + scriptIndex + "].literalArgument[1].data." + primary.rootKey + ".data.pinJoin.seoCanonicalUrl"));
                 bindings.put(row);
                 if (canonicalId != null && !pageId.equals(canonicalId))
                     return unproven(proof.put("requestedRecordBindings", bindings), "EXPLICIT_CANONICAL_PIN_CONFLICT");
@@ -135,6 +139,28 @@ public final class PinIdentityResolver {
 
     private static Result unproven(JSONObject proof, String reason) throws Exception {
         return finish("UNPROVEN", null, proof.put("reason", reason));
+    }
+
+    private static final class PrimaryRecord {
+        final String rootKey; final JSONObject data;
+        PrimaryRecord(String rootKey, JSONObject data) { this.rootKey=rootKey; this.data=data; }
+    }
+
+    /** Accepts a renamed Pinterest operation only when its shallow primary data is the requested Pin. */
+    private static PrimaryRecord primaryRecord(JSONObject response, String expectedPinId) throws Exception {
+        JSONObject roots=response.getJSONObject("data");
+        PrimaryRecord found=null;
+        Iterator<String> keys=roots.keys();
+        while(keys.hasNext()) {
+            String key=keys.next();
+            JSONObject operation=roots.optJSONObject(key);
+            JSONObject data=operation==null?null:operation.optJSONObject("data");
+            if(data==null || !"Pin".equals(data.optString("__typename")) || !expectedPinId.equals(data.optString("entityId"))) continue;
+            if(found!=null) throw new IllegalArgumentException("MULTIPLE_REQUESTED_PRIMARY_PIN_RECORDS");
+            found=new PrimaryRecord(key,data);
+        }
+        if(found==null) throw new IllegalArgumentException("REQUESTED_PRIMARY_PIN_RECORD_MISSING");
+        return found;
     }
 
     private static Result finish(String status, String normalizedPinId, JSONObject proof) throws Exception {

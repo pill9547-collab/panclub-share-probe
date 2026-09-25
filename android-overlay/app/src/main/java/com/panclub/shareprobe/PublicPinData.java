@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,20 +41,21 @@ public final class PublicPinData {
         List<String> links=new ArrayList<>(); boolean parseError=false; int scriptNumber=0;
         Matcher scripts=SCRIPT.matcher(html);
         while (scripts.find()) {
-            if (scripts.group(1).contains("data-relay-completed-request")) {
+            String body=scripts.group(2).trim();
+            if (body.startsWith(WRAPPER)) {
                 try {
-                    String body=scripts.group(2).trim();
-                    if (!body.startsWith(WRAPPER)) throw new IllegalArgumentException("UNKNOWN_WRAPPER");
                     JSONTokener tokens=new JSONTokener(body.substring(WRAPPER.length()));
                     Object keyRaw=tokens.nextValue();
                     if (!(keyRaw instanceof String) || tokens.nextClean()!=',') throw new IllegalArgumentException("INVALID_ARGUMENTS");
                     JSONObject key=new JSONObject(URLDecoder.decode((String)keyRaw,StandardCharsets.UTF_8.name()));
                     Object second=tokens.nextValue();
                     if (!(second instanceof JSONObject) || tokens.nextClean()!=')' || tokens.nextClean()!=';' || tokens.nextClean()!=0) throw new IllegalArgumentException("INVALID_TRAILING_CODE");
-                    JSONObject data=((JSONObject)second).getJSONObject("data").getJSONObject("v3GetPinQueryv2").getJSONObject("data");
-                    if (!expectedPinId.equals(data.optString("entityId"))) {scriptNumber++;continue;}
-                    if (!"Pin".equals(data.optString("__typename")) || !expectedPinId.equals(key.getJSONObject("variables").optString("pinId"))) throw new IllegalArgumentException("PIN_IDENTITY_CONFLICT");
-                    String locator="script["+scriptNumber+"].literalArgument[1].data.v3GetPinQueryv2.data.link";
+                    JSONObject variables=key.optJSONObject("variables");
+                    if(variables==null || !expectedPinId.equals(variables.optString("pinId"))) {scriptNumber++;continue;}
+                    PrimaryRecord primary=primaryRecord((JSONObject)second,expectedPinId);
+                    JSONObject data=primary.data;
+                    if (!"Pin".equals(data.optString("__typename"))) throw new IllegalArgumentException("PIN_IDENTITY_CONFLICT");
+                    String locator="script["+scriptNumber+"].literalArgument[1].data."+primary.rootKey+".data.link";
                     JSONObject row=new JSONObject().put("entityId",data.getString("entityId")).put("locator",locator);
                     if (!data.has("link")) row.put("linkState","MISSING");
                     else if (data.isNull("link")) row.put("linkState","EXPLICIT_NULL");
@@ -83,6 +85,23 @@ public final class PublicPinData {
     private static Result result(String status,String link,JSONObject p) throws Exception {
         p.put("status",status).put("destinationUrl",link==null?JSONObject.NULL:link);
         return new Result(status,link,p);
+    }
+    private static final class PrimaryRecord {
+        final String rootKey; final JSONObject data;
+        PrimaryRecord(String rootKey,JSONObject data){this.rootKey=rootKey;this.data=data;}
+    }
+    private static PrimaryRecord primaryRecord(JSONObject response,String expectedPinId) throws Exception {
+        JSONObject roots=response.getJSONObject("data"); PrimaryRecord found=null;
+        Iterator<String> keys=roots.keys();
+        while(keys.hasNext()) {
+            String key=keys.next(); JSONObject operation=roots.optJSONObject(key);
+            JSONObject data=operation==null?null:operation.optJSONObject("data");
+            if(data==null || !"Pin".equals(data.optString("__typename")) || !expectedPinId.equals(data.optString("entityId"))) continue;
+            if(found!=null) throw new IllegalArgumentException("MULTIPLE_REQUESTED_PRIMARY_PIN_RECORDS");
+            found=new PrimaryRecord(key,data);
+        }
+        if(found==null) throw new IllegalArgumentException("REQUESTED_PRIMARY_PIN_RECORD_MISSING");
+        return found;
     }
     private static boolean external(String url) {
         try {

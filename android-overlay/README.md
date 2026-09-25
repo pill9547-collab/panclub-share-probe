@@ -28,3 +28,11 @@ page `og:url`/canonical identity agreeing. Related, recommended, visually simila
 and otherwise adjacent Pin records are never identity evidence. The observed
 `211174976645508` to `567523990553474836` case satisfies that narrow proof; the
 policy remains `EVIDENCE_WAIT_NOT_PRODUCTION_ENABLED`.
+
+The live alias extractor now keys on the exact strict completed-request function
+call at the start of a script rather than Pinterest's optional HTML marker, and
+locates a renamed response operation only at its shallow primary `.data` Pin.
+The request variable and primary entity must still equal the requested Pin, at
+least one requested record must explicitly bind `canonicalPin`, and all record
+and page canonical identities must agree. Canonical or `og:url` metadata alone
+remains insufficient.

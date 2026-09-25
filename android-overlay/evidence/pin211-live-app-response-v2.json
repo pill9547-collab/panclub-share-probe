@@ -1,0 +1,46 @@
+{
+  "fixture": "LIVE_ANDROID_HEADER_PIN_ALIAS_1YrYox7oT_V2",
+  "observedAt": "2026-09-25T06:14:00Z",
+  "requestHeaders": {
+    "User-Agent": "PANCLUB-ShareProbe/0.7",
+    "Accept": "text/html,application/xhtml+xml",
+    "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.5",
+    "cookiesReplayed": false
+  },
+  "requestedPinId": "211174976645508",
+  "canonicalPagePinId": "567523990553474836",
+  "sentResponse": {
+    "bytes": 300343,
+    "sha256": "41a41bdfedc5b579e281ccc55f90b8b6d071935334c62438aeede07ccb6ce467",
+    "requestedIdBoundCompletedRecordCount": 0,
+    "expectedDecision": "PAGE_IDENTITY_UNVERIFIED_THEN_CANONICAL_RETRY"
+  },
+  "canonicalRetryResponse": {
+    "bytes": 1494274,
+    "sha256": "1841483af1daf6e00cafbd5521e5b09b8ec6252925acbaa45143e79f605b1499",
+    "requestedIdBoundCompletedRecordCount": 2,
+    "explicitCanonicalPinBindingCount": 1,
+    "excerptFixture": "android-overlay/tests/fixtures/pin211-live-android-header-excerpt.html",
+    "excerptSha256": "e4240625cb5709fb7b82692b21e8b2a687a19ff14ba3975bf10b6b517068f4d3"
+  },
+  "explicitFirstPartyEvidence": {
+    "requestVariablesPinId": "211174976645508",
+    "primaryRecordEntityId": "211174976645508",
+    "primaryRecordSeoUrlPinId": "211174976645508",
+    "primaryRecordCanonicalPinEntityId": "567523990553474836",
+    "primaryRecordSeoCanonicalUrlPinId": "567523990553474836",
+    "pageOgUrlPinId": "567523990553474836",
+    "pageCanonicalUrlPinId": "567523990553474836",
+    "destinationUrl": "https://www.tasteofhome.com/collection/vintage-christmas-cakes/?trkid=soc-toh-pinterest-lp"
+  },
+  "genericExtractionBoundary": {
+    "requiresExactCompletedRequestWrapperAtScriptStart": true,
+    "requiresDataRelayHtmlAttribute": false,
+    "requiresFixedOperationName": false,
+    "requiresShallowPrimaryPinEntityToEqualRequestedPinId": true,
+    "requiresAtLeastOneExplicitCanonicalPinBinding": true,
+    "requiresAllPageAndRecordCanonicalIdsToAgree": true
+  },
+  "identityDecision": "PROVEN_ALIAS",
+  "policy": "EVIDENCE_WAIT_NOT_PRODUCTION_ENABLED"
+}
