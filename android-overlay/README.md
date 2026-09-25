@@ -10,3 +10,10 @@ The product-owner-approved `BF-F02 TEST_WAIT Consumer Preview Exception v0.1`
 adds a separate, fixture-only Korean preview for the verified Easy Vegan
 Vanilla Cake 12 cm × 2 validation target. It does not change BF-F02 data,
 production readiness, FIT state, or the fail-closed Pinterest path.
+
+The generalized preview pipeline now evaluates every normal READ session through
+separate geometry, technical-eligibility, consumer-authority, and presentation
+stages. Property-compatible but unapproved recipes stop at authority-required
+Korean copy with no ingredient output. The Easy Vegan fixture remains the only
+authorized case, and only for the approved 12 cm × 2 target. Its launcher is
+available only inside diagnostics; it uses the same generalized session path.
