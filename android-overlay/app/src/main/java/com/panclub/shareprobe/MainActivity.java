@@ -172,21 +172,23 @@ public final class MainActivity extends Activity {
             TextView raw = label("", 12, Color.DKGRAY);
             raw.setTextIsSelectable(true);
             raw.setText(session.diagnostics().toString());
-            Button fixture = button("내부 진단: Easy Vegan fixture");
-            fixture.setOnClickListener(v -> openCoreValuePreview());
+            if (DiagnosticEasyVeganLauncher.visible(
+                    session.diagnostics().optString("mode"), diagnosticsVisible)) {
+                Button fixture = button(DiagnosticEasyVeganLauncher.BUTTON_LABEL);
+                fixture.setOnClickListener(v -> openCoreValuePreview());
+            }
         }
     }
 
     private void openCoreValuePreview() {
         try {
             JSONObject authority = previewAuthorityOrNull();
-            if (authority == null) throw new IllegalStateException("PREVIEW_AUTHORITY_ASSET_MISSING");
-            session = new PreBakeSession(ApprovedPreviewFixture.readResult(authority), authority);
+            session = DiagnosticEasyVeganLauncher.launch(authority);
             targetDiameter = "12";
             targetCount = "2";
             targetHeight = "";
             diagnosticsVisible = false;
-            render(session.evaluateTarget(targetDiameter, targetCount, targetHeight));
+            render(session.view());
         } catch (Exception e) {
             showMessage("검증 전 예시를 열지 못했어요.", "내장된 검증 fixture를 확인해 주세요.");
         }

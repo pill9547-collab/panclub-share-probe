@@ -17,3 +17,6 @@ stages. Property-compatible but unapproved recipes stop at authority-required
 Korean copy with no ingredient output. The Easy Vegan fixture remains the only
 authorized case, and only for the approved 12 cm × 2 target. Its launcher is
 available only inside diagnostics; it uses the same generalized session path.
+The physical-phone debug entry is `Easy Vegan 검증 예시 열기`; its visibility
+requires an expanded `INTERNAL_DIAGNOSTIC` view and it delegates to the normal
+`PreBakeSession` target evaluation rather than a fixture-specific presenter.
