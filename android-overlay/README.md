@@ -20,3 +20,11 @@ available only inside diagnostics; it uses the same generalized session path.
 The physical-phone debug entry is `Easy Vegan 검증 예시 열기`; its visibility
 requires an expanded `INTERNAL_DIAGNOSTIC` view and it delegates to the normal
 `PreBakeSession` target evaluation rather than a fixture-specific presenter.
+
+Pinterest Pin identity mismatches remain fail-closed unless `PinIdentityResolver`
+finds an expected-ID-bound first-party Pin record that explicitly names the page
+Pin as its `canonicalPin`, with every requested-record SEO identity and every
+page `og:url`/canonical identity agreeing. Related, recommended, visually similar,
+and otherwise adjacent Pin records are never identity evidence. The observed
+`211174976645508` to `567523990553474836` case satisfies that narrow proof; the
+policy remains `EVIDENCE_WAIT_NOT_PRODUCTION_ENABLED`.

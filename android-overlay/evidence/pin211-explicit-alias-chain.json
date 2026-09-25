@@ -1,0 +1,48 @@
+{
+  "fixture": "REAL_PHONE_PIN_IDENTITY_MISMATCH_1YrYox7oT",
+  "observedAt": "2026-09-25T03:32:00Z",
+  "sharedUrl": "https://pin.it/1YrYox7oT",
+  "redirects": [
+    {
+      "status": 308,
+      "requestUrl": "https://pin.it/1YrYox7oT",
+      "location": "https://api.pinterest.com/url_shortener/1YrYox7oT/redirect/"
+    },
+    {
+      "status": 302,
+      "requestUrl": "https://api.pinterest.com/url_shortener/1YrYox7oT/redirect/",
+      "location": "https://www.pinterest.co.kr/pin/211174976645508/sent/?invite_code=ebca1c0ba0a944d4af8155210f04554e&sender=823033038060606833&sfo=1"
+    },
+    {
+      "status": 308,
+      "requestUrl": "https://www.pinterest.co.kr/pin/211174976645508/sent/?invite_code=ebca1c0ba0a944d4af8155210f04554e&sender=823033038060606833&sfo=1",
+      "location": "https://kr.pinterest.com/pin/211174976645508/sent/?invite_code=ebca1c0ba0a944d4af8155210f04554e&sender=823033038060606833&sfo=1"
+    }
+  ],
+  "requestedPinId": "211174976645508",
+  "publicPagePinId": "567523990553474836",
+  "sentPageBodySha256": "181eb6ce3ada12fab5f07cee36b79f9c9de1c34d59a6691b747854c87f091690",
+  "canonicalRequestBodySha256": "701f6498664a70fc4b9be37bb1d61650caca2d9cf825991fb58970b67ed93f53",
+  "explicitFirstPartyBindings": {
+    "requestVariablesPinId": "211174976645508",
+    "recordEntityId": "211174976645508",
+    "recordSeoUrlPinId": "211174976645508",
+    "recordCanonicalPinEntityId": "567523990553474836",
+    "recordSeoCanonicalUrlPinId": "567523990553474836",
+    "pageOgUrlPinId": "567523990553474836",
+    "pageCanonicalUrlPinId": "567523990553474836"
+  },
+  "identityDecision": "PROVEN_ALIAS",
+  "identityEvidenceClass": "REQUESTED_PIN_EXPLICIT_CANONICAL_PIN_BINDING",
+  "destinationUrl": "https://www.tasteofhome.com/collection/vintage-christmas-cakes/?trkid=soc-toh-pinterest-lp",
+  "policy": "EVIDENCE_WAIT_NOT_PRODUCTION_ENABLED",
+  "cookiesReplayed": false,
+  "excludedEvidence": [
+    "title",
+    "image",
+    "description",
+    "domain similarity",
+    "visual similarity",
+    "unrelated or recommended Pin records"
+  ]
+}
